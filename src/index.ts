@@ -1,7 +1,9 @@
 import http, { IncomingMessage, ServerResponse } from 'http'
 import { routes } from './routes/index'
 import { matchRoute } from './utils/index'
+import dotenv from "dotenv";
 
+dotenv.config()
 const PORT = process.env.PORT || 3000
 
 const server = http.createServer(async (req: IncomingMessage, res: ServerResponse) => {
