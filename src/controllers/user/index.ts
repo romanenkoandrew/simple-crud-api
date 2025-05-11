@@ -5,12 +5,14 @@ import { parseRequestBody } from "../../utils"
 
 export const getUsersHandler = async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
     const users = getAllUsers()
+    res.setHeader('Content-Type', 'application/json')
     res.statusCode = 200
     res.end(JSON.stringify(users))
 }
 
 export const createUserHandler = async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
     const body = await parseRequestBody<UserWithoutId>(req)
+    res.setHeader('Content-Type', 'application/json')
 
     const { username, age, hobbies } = body
 
@@ -31,7 +33,7 @@ export const createUserHandler = async (req: IncomingMessage, res: ServerRespons
         return
     }
 
-    const user = createUser({ username, age, hobbies });
-    res.statusCode = 201;
-    res.end(JSON.stringify(user));
+    const user = createUser({ username, age, hobbies })
+    res.statusCode = 201
+    res.end(JSON.stringify(user))
 }
