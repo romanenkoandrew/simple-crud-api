@@ -29,3 +29,18 @@ export const removeUser = (id: string): boolean => {
 
     return false
 }
+
+export const updateUser = (id: string, data: Partial<UserWithoutId>): User | undefined => {
+    const index = users.findIndex(user => user.id === id)
+
+    if (index !== -1) {
+        users[index] = {
+            ...users[index],
+            ...data,
+        }
+
+        return users[index]
+    }
+
+    return undefined
+}

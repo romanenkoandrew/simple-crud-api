@@ -1,6 +1,12 @@
 import { IncomingMessage, ServerResponse } from "node:http"
 import { UserWithoutId } from "../../models/user"
-import { createUser, getAllUsers, getUserById, removeUser } from "../../services/user/index"
+import { 
+    createUser,
+    getAllUsers,
+    getUserById,
+    removeUser,
+    updateUser
+} from "../../services/user/index"
 import { parseRequestBody } from "../../utils"
 
 export type HandlerData = {
@@ -82,7 +88,41 @@ export const removeUserHandler = async (data: HandlerData): Promise<void> => {
 
     if (userRemoved) {
         res.statusCode = 204
-        res.end(JSON.stringify(userRemoved))
+        res.end(JSON.stringify({ message: 'User removed succesfully' }))
+        return
+    }
+
+    res.statusCode = 404
+    res.end(JSON.stringify({error: 'User not found'}))
+}
+
+export const updateUserHandler = async (data: HandlerData): Promise<void> => {
+    const { req, res, params } = data
+    res.setHeader('Content-Type', 'application/json')
+
+    if (!params || !params.id) {
+        res.statusCode = 400
+        res.end(JSON.stringify({error: 'Invalid user id'}))
+        return
+    }
+
+    const body = await parseRequestBody<Partial<UserWithoutId>>(req)
+
+    if (
+        (body.username && typeof body.username !== 'string') 
+        || (body.age && typeof body.age !== 'number')
+        || (body.hobbies && (!Array.isArray(body.hobbies) || !body.hobbies.every(el => typeof el === 'string')))
+    ) {
+        res.statusCode = 400
+        res.end(JSON.stringify({ error: 'Invalid required field type' }))
+        return
+    }
+
+    const userUpdated = updateUser(params.id, body)
+
+    if (userUpdated) {
+        res.statusCode = 200
+        res.end(JSON.stringify({ message: 'User updated succesfully' }))
         return
     }
 
