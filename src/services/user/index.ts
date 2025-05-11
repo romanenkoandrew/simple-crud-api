@@ -14,3 +14,7 @@ export const createUser = (user: UserWithoutId): User => {
     users.push(newUser)
     return newUser
 }
+
+export const getUserById = (id: string) => {
+    return users.find(el => el.id === id)
+}

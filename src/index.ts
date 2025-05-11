@@ -11,7 +11,7 @@ const server = http.createServer(async (req: IncomingMessage, res: ServerRespons
         return
     }
 
-    const { handler } = matchRoute(req.method, req.url, routes)
+    const { handler, params } = matchRoute(req.method, req.url, routes)
 
     if (!handler) {
         res.statusCode = 404
@@ -20,7 +20,7 @@ const server = http.createServer(async (req: IncomingMessage, res: ServerRespons
       }
   
       try {
-        await handler(req, res)
+        await handler({ req, res, params })
       } catch (error) {
         console.error('Unhandled error:', error)
         res.statusCode = 500

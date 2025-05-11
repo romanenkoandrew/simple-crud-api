@@ -1,7 +1,7 @@
-import { IncomingMessage, ServerResponse } from "node:http"
+import { HandlerData } from "../controllers/user"
 
 export type Route = {
-    method: string;
-    path: string;
-    handler: (req: IncomingMessage, res: ServerResponse) => Promise<void>;
+    method: string
+    path: string
+    handler: (data: HandlerData) => Promise<void>
 }
