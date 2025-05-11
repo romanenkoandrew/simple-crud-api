@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from "node:http"
 import { UserWithoutId } from "../../models/user"
-import { createUser, getAllUsers, getUserById } from "../../services/user/index"
+import { createUser, getAllUsers, getUserById, removeUser } from "../../services/user/index"
 import { parseRequestBody } from "../../utils"
 
 export type HandlerData = {
@@ -47,7 +47,7 @@ export const createUserHandler = async (data: HandlerData): Promise<void> => {
 }
 
 export const getUserByIdHandler = async (data: HandlerData): Promise<void> => {
-    const { req, res, params } = data
+    const { res, params } = data
     res.setHeader('Content-Type', 'application/json')
 
     if (!params || !params.id) {
@@ -61,6 +61,28 @@ export const getUserByIdHandler = async (data: HandlerData): Promise<void> => {
     if (user) {
         res.statusCode = 200
         res.end(JSON.stringify(user))
+        return
+    }
+
+    res.statusCode = 404
+    res.end(JSON.stringify({error: 'User not found'}))
+}
+
+export const removeUserHandler = async (data: HandlerData): Promise<void> => {
+    const { res, params } = data
+    res.setHeader('Content-Type', 'application/json')
+
+    if (!params || !params.id) {
+        res.statusCode = 400
+        res.end(JSON.stringify({error: 'Invalid user id'}))
+        return
+    }
+
+    const userRemoved = removeUser(params.id)
+
+    if (userRemoved) {
+        res.statusCode = 204
+        res.end(JSON.stringify(userRemoved))
         return
     }
 
