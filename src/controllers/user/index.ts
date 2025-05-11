@@ -7,7 +7,7 @@ import {
     removeUser,
     updateUser
 } from "../../services/user/index"
-import { parseRequestBody } from "../../utils"
+import { isValidUUID, parseRequestBody } from "../../utils"
 
 export type HandlerData = {
     req: IncomingMessage
@@ -56,7 +56,7 @@ export const getUserByIdHandler = async (data: HandlerData): Promise<void> => {
     const { res, params } = data
     res.setHeader('Content-Type', 'application/json')
 
-    if (!params || !params.id) {
+    if (!params || !params.id || !isValidUUID(params.id)) {
         res.statusCode = 400
         res.end(JSON.stringify({error: 'Invalid user id'}))
         return
@@ -78,7 +78,7 @@ export const removeUserHandler = async (data: HandlerData): Promise<void> => {
     const { res, params } = data
     res.setHeader('Content-Type', 'application/json')
 
-    if (!params || !params.id) {
+    if (!params || !params.id || !isValidUUID(params.id)) {
         res.statusCode = 400
         res.end(JSON.stringify({error: 'Invalid user id'}))
         return
@@ -100,7 +100,7 @@ export const updateUserHandler = async (data: HandlerData): Promise<void> => {
     const { req, res, params } = data
     res.setHeader('Content-Type', 'application/json')
 
-    if (!params || !params.id) {
+    if (!params || !params.id || !isValidUUID(params.id)) {
         res.statusCode = 400
         res.end(JSON.stringify({error: 'Invalid user id'}))
         return
