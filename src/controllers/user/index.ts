@@ -16,7 +16,19 @@ export const createUserHandler = async (req: IncomingMessage, res: ServerRespons
 
     if (!username || !age || !hobbies) {
         res.statusCode = 400
-        res.end(JSON.stringify({ error: 'Missing title or content' }))
+        res.end(JSON.stringify({ error: 'Missing required fields' }))
+        return
+    }
+
+    if (
+        typeof username !== 'string' 
+        || typeof age !== 'number' 
+        || !Array.isArray(hobbies)
+        || !hobbies.every(el => typeof el === 'string')
+    ) {
+        res.statusCode = 400
+        res.end(JSON.stringify({ error: 'Invalid required field type' }))
+        return
     }
 
     const user = createUser({ username, age, hobbies });
