@@ -1,10 +1,6 @@
-import { getUsersHandler } from "../controllers/user/index"
+import { userRoutes } from './user/index';
+import { Route } from './types';
 
-export const routes: Record<
-  string,
-  Record<string, () => Promise<string>>
-> = {
-  '/users': {
-    GET: getUsersHandler
-  }
-};
+export const routes: Route[] = [
+  ...userRoutes,
+];
